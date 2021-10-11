@@ -97,11 +97,10 @@ class Test6(TestCase):
             follow=True
         )
         self.assertRedirects(
-            response, reverse(
-                'posts:profile', kwargs={
-                    'username': Test6.user1.username
-                })
-            )
+            response,
+            reverse('posts:profile',
+                    kwargs={'username': Test6.user1.username})
+        )
         self.assertEqual(Post.objects.count(), post_count + 1)
 
     def test_cache(self):
