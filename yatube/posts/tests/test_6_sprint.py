@@ -1,15 +1,12 @@
-import shutil
 import tempfile
 
 from django.conf import settings
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
-from django.test.testcases import _AssertNumQueriesContext
 from django.urls import reverse
 
-from ..forms import PostForm
-from ..models import Comment, Group, Post, User
+from ..models import Group, Post, User
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 small_gif = (
@@ -19,7 +16,9 @@ small_gif = (
              b'\x00\x00\x00\x2C\x00\x00\x00\x00'
              b'\x02\x00\x01\x00\x00\x02\x02\x0C'
              b'\x0A\x00\x3B'
-            )
+)
+
+
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class Test6(TestCase):
     @classmethod
@@ -45,7 +44,7 @@ class Test6(TestCase):
             name='small.gif',
             content=small_gif,
             content_type='image/gif'
-            )
+        )
         cls.post = Post.objects.create(
             text='Текст',
             author=cls.user1,
@@ -86,7 +85,7 @@ class Test6(TestCase):
             name='small.gif',
             content=small_gif,
             content_type='image/gif'
-            )
+        )
         form_data = {
             'text': 'test text',
             'group': self.group.pk,
@@ -97,6 +96,10 @@ class Test6(TestCase):
             data=form_data,
             follow=True
         )
+        self.assertRedirects(response, reverse(
+            'posts:profile', kwargs={
+                'username': Test6.user1.username
+        }))
         self.assertEqual(Post.objects.count(), post_count + 1)
 
     def test_cache(self):
@@ -109,4 +112,3 @@ class Test6(TestCase):
         self.assertEqual(post_in_cache.text, Test6.post.text)
         cache.clear()
         self.assertEqual(Post.objects.count(), 0)
-
