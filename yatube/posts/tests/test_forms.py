@@ -182,15 +182,15 @@ class TestContextImage(TestCase):
             })
         follow_index_url = reverse(
             'posts:follow_index'
-            )
+        )
         self.authorized_client2.get(follow_url)
         author_response = self.authorized_client.get(
             follow_index_url
-            ).context['page_obj']
+        ).context['page_obj']
         self.assertNotIn(self.post, author_response)
         not_author_response = self.authorized_client2.get(
             follow_index_url
-            ).context['page_obj']
+        ).context['page_obj']
         self.assertIn(self.post, not_author_response)
 
     def test_comment_login(self):
@@ -202,7 +202,7 @@ class TestContextImage(TestCase):
             reverse(
                 'posts:add_comment', kwargs={
                     'post_id': self.post.pk
-                    }),
+                }),
             data=form_data,
             follow=True
         )
@@ -222,7 +222,7 @@ class TestContextImage(TestCase):
             reverse(
                 'posts:add_comment', kwargs={
                     'post_id': self.post.pk
-                    }),
+                }),
             data=form_data,
             follow=True
         )
