@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
+from django.core.cache import cache
 
 from ..models import Group, Post
 
@@ -18,6 +19,7 @@ class PostUrlTests(TestCase):
         )
 
     def setUp(self):
+        cache.clear()
         self.guest_client = Client()
         self.user = User.objects.create_user(username='Guest')
         self.authorized_client = Client()
@@ -83,4 +85,4 @@ class PostUrlTests(TestCase):
 
     def test_urls_status_edit_not_author(self):
         response = self.authorized_client2.get(f'/posts/{self.post.pk}/edit/')
-        self.assertRedirects(response, f'/posts/{self.post.pk}/')
+        self.assertRedirects(response, '/')

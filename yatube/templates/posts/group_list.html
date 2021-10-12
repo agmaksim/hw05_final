@@ -14,7 +14,7 @@
           <article>
             <ul>
               <li>
-                <a href="{% url 'posts:post_detail' post.pk %}"> Запись № {{post.pk}} </a>
+                {% include 'posts/includes/post.html' %}
               </li>
               <li>
                 <a href="{% url 'posts:profile' post.author %}">

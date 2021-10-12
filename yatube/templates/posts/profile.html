@@ -44,7 +44,7 @@
           <p>
           {{ post.text }}
           </p>
-          <a href="{% url 'posts:post_detail' post.pk %}"> подробная информация </a>
+          {% include 'posts/includes/post.html' %}
         </article>       
         <a href="{% if post.group.slug %} {% url 'posts:group_posts' post.group.slug %} {% endif %}"> все записи группы</a>    
         <hr>

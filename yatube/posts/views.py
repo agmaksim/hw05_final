@@ -3,11 +3,13 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.cache import cache_page
 
 from .forms import CommentForm, PostForm
 from .models import Follow, Group, Post, User
 
 
+@cache_page(15)
 def index(request):
     post_list = Post.objects.all()
     paginator = Paginator(post_list, settings.PAGE_VOL)
@@ -87,27 +89,21 @@ def post_create(request):
 def post_edit(request, post_id):
     template = 'posts/post_create.html'
     post = get_object_or_404(Post, id=post_id)
-    if request.method == 'GET':
-        if request.user != post.author:
-            return redirect('posts:post_detail', post_id=post_id)
-        form = PostForm(
-            request.POST or None,
-            files=request.FILES or None,
-            instance=post
-        )
-    if request.method == 'POST':
-        form = PostForm(
-            request.POST,
-            instance=post,
-            files=request.FILES)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            form.save()
+    if post.author.id != request.user.id:
+        return redirect('posts:index')
+    form = PostForm(
+        request.POST or None,
+        files=request.FILES or None,
+        instance=post
+    )
+    if form.is_valid():
+        form.save()
         return redirect('posts:post_detail', post_id=post_id)
     return render(request, template, {
-                  'form': form, 'post': post, 'is_edit': True
-                  })
+        'form': form,
+        'is_edit': True,
+        'post': post,
+    })
 
 
 @login_required
@@ -143,8 +139,7 @@ def profile_follow(request, username):
     if request.user.username != username:
         author = get_object_or_404(User, username=username)
         Follow.objects.get_or_create(user=request.user, author=author)
-        return redirect('posts:profile', username)
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    return redirect('posts:profile', username)
 
 
 @login_required
