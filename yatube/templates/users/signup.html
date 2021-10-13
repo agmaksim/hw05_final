@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
+{% block tittle %} Зарегистрироваться {% endblock %}
 {% block content %}
 <html lang="ru"> 
   <head>    
@@ -12,7 +13,6 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
-    {% block tittle %}Зарегистрироваться {% endblock %}
   </head>
   <body>
     <main>
@@ -21,7 +21,7 @@
             <div class="col-md-8 p-5">
               <div class="card">
                 <div class="card-header">
-                  Зарегистрироваться
+                  Регистрация
                 </div>
                 <div class="card-body">
                   <form method="post" action="{% url 'users:signup' %}">

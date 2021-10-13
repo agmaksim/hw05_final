@@ -19,6 +19,7 @@
           {% if request.resolver_match.view_name == 'about:tech' %} active
           {% endif %} "href="{% url 'about:tech' %}">Технологии</a>
         </li>
+        {% if request.user.is_authenticated %}
         <li class="nav-item"> 
           <a class="nav-link
           {% if request.resolver_match.view_name == 'posts:create' %} active
@@ -37,6 +38,7 @@
           link-light {% if request.resolver_match.view_name  == 'posts:profile' %} active
           {% endif %}" href="{% url 'posts:profile' request.user %}">Пользователь: {{ user.username }}</a>
         <li>
+        {% else %}
         <li class="nav-item"> 
           <a class="nav-link
           {% if request.resolver_match.view_name == 'users:login' %} active 
@@ -47,6 +49,7 @@
           {% if request.resolver_match.view_name == 'users:signup' %} active 
           {% endif %} "href="{% url 'users:signup' %}"> Регистрация</a>
         </li>
+        {% endif %}
         </ul>
         </div>
       </nav>      
